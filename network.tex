@@ -164,5 +164,79 @@ it to remove interference caused by overlapping flows.\\
 This technique effectively increases the downstream data rate by omitting the upstream
 portion when necessary.\\\\
 When we have both a telephone and ADSL line, we may have problems when dialing a phone call, to forego this problem we installed filters to separate the communications.\\\\
-We also may have signal attenuation, which if we know it and it is constant, we can amplify the signal. The rule is that if you have a short bandwidth then the attenuation is constant, if it isn't short, it isn't costant, to solve this problem you split the bandwidth into different channels with low bandwidth, but since we can transmit simultaneously then we have around the same speed.
+We also may have signal attenuation, which if we know it and it is constant, we can amplify the signal. The rule is that if you have a short bandwidth then the attenuation is constant, if it isn't short, it isn't costant, to solve this problem you split the bandwidth into different channels with low bandwidth, but since we can transmit simultaneously then we have around the same speed.\\
+This technique is called modulation and there exist multiple types:
+\begin{itemize} 
+    \item \textbf{CAP} Carrierless Amplitude/Phase modulation, it uses two orthogonal carriers (sine and cosine) to transmit data, it is simple and cost effective, but it is sensitive to noise and interference. Also we havent really done it.
+    \item \textbf{DMT} Discrete Multi-Tone modulation, it divides the available bandwidth into multiple sub-channels (tones), each tone can be modulated independently, it is more complex and expensive, but it is more robust against noise and interference.
+\end{itemize}
+The one we focus on is DMT, a graph of how DMT works is shown below:
+\begin{center}
+    \includegraphics[scale=0.5]{img/AccessNetworks/XDSL/DMT.png}
+\end{center}
+Each sub-band has a distinct carrier frequency,allowing simultaneous data transmission. Key features include:
+\begin{itemize}
+    \item \textbf{Band Division}: The band is segmented into 249 sub-channels for downstream and 25 for upstream, each 4 KHz wide, resulting in an overall bandwidth of 1 MHz.
+    \item \textbf{Frequency-Specific Modulation}: Modulation is adapted to the attenuation characteristics of each sub-channel. This prevents data transmission over heavily attenuated (or "unlucky") frequencies, improving overall efficiency.
+    \item \textbf{Channel Behavior}:  Sub-channel behavior is nearly constant, enabling higher SNR (Signal-to-Noise Ratio) within each sub-channel. This flat behavior ensures optimal modulation using Shannon's law.
+    \item \textbf{Dynamic Adaptation}: DMT dynamically adjusts the data rate to line conditions, offering resilience against interference by reallocating resources from imapired sub-channels to better-performing ones.
+    \item \textbf{Adaptive Modulation}:  Each sub-channel employs a QAM modulation scheme suited to its specific SNR conditions. Higher SNR sub-channels use denser QAM constellations (e.g., QAM 64, QAM 256), while lower SNR channels use simpler schemes (e.g., QAM 16 or BPSK).
+\end{itemize}
+The Water filling Algorithm is a technique used in ADSL modems to adapt QAM modulation to the specific conditions of the telephone line. It optimizes data trasmission by considering:
+\begin{itemize}
+    \item \textbf{SNR Dependency}: Higher SNR sub-channels (deeper water) can support denser QAM modulations, enabling higher data rates.
+    \item \textbf{Dynamic Adjustment}: Each sub-channel is individually analyzed, and the number of bits per symbol is adjusted according to its SNR.
+    \item \textbf{Noise management}:Channels with higher noise (shallow water) receive lower power and simpler modulation schemes to minimize errors.
+    \item \textbf{Power Allocation}: Available power is distributed to maximize the overall bit rate while considering the unique conditions of each sub-channel.
+\end{itemize}
+
+Let's talk about the architecture of ADSL:
+\begin{center}
+    \includegraphics[scale=0.5]{img/AccessNetworks/XDSL/architecture.png}
+\end{center}
+Its key components include:\\
+\textbf{ATU-R} (User Modem): Located at the user's premises\\
+\textbf{ATU-C} (C.O. Modem): Located at the Central Office (C.O.), with one modem for each user. The C.O. houses hundreds of modems, requiring substantial space and energy, a significant disadvantage of this architecture. For this reason, the DSLAM (DSL Access Multiplexer) was implemented: a device that worked as multiple ATU-C together that had the main purpose of occupying less space in the C.O
+\textbf{Splitter/Filter}: Separates voice (POTS) and data signals, allowing simultaneous use of both services, it's present at both the CO and the end user's side.\\
+PPP is designed to provide a reliable communication link between two peers over a simple,
+direct connection. It is specifically used in ADSL to connect the end user to the Central Office (CO), and it offers important functions such as:
+\begin{itemize}
+    \item Authentication
+    \item Authorization
+    \item Automatic configuration of network interfaces
+\end{itemize}
+\begin{center}
+    \includegraphics[scale=0.5]{img/AccessNetworks/XDSL/PPP.png}
+\end{center}
+PPP is made up of two main sub-protocols:
+\begin{itemize}
+    \item \textbf{LCP} (Link Control Protocol): Responsible for establishing, configuring, and terminating the data link connection. It negotiates link parameters and ensures the link is operational.
+    \item \textbf{NCP} (Network Control Protocol): NCP is a family of protocols that configure network parameters for the network layer, adapting to different network protocols
+\end{itemize}
+\subsection{VDSL}
+\begin{center}
+    \includegraphics[scale=0.5]{img/AccessNetworks/VDSL/VDSL.png}
+\end{center}
+To actually improve ADSL we have VDSL (Very high bit-rate DSL) where to have more broadband we use higher frequencies, while also trying to get as close to the user with fiber as possible (not anymore at the CO, but a the user Node), so the DSLAMs,ATU-C and splitters are in the cabinets\\
+We have 2 main types of configurations for VDSL:
+\begin{itemize}
+    \item \textbf{Frequency Division Duplexing (FDD)}: We ahve a band for upstream and downstream, while also providing another for upstream to have a symmetric connection.
+    \item \textbf{Time Division Duplexing (TDD)}: We use the same band for upstream and downstream, but we divide it in time slots, so we can have a symmetric connection.
+\end{itemize}
+\begin{center}
+    \includegraphics[scale=0.5]{img/AccessNetworks/VDSL/types.png}
+\end{center}
+To cancel crosstalk we use vectoring , a technique which uses an anti-sginal methodology to enhance signal quality and network performance and its done by doing the follwing stepsL
+\begin{itemize}
+    \item \textbf{Crosstalk Detection}: The system continuously monitors the signals on each twisted pair to identify crosstalk interference.
+    \item \textbf{Anti Signal Calculation}: We create a signal with opposite phase to the crosstalk
+    \item \textbf{Inejction of Anti-Signal}: The anti-signal is injected into the line to cancel out the crosstalk, while ensuring synchronization for maximum effectiveness.
+    \item \textbf{Complete Synchronization}: Precise synchronization of all lines is essential for effective vectoring
+    \item \textbf{Continuous Monitoring and Adjustment}: The system continuously monitors the lines and adjusts the anti-signals as needed to adapt to changing conditions.
+\end{itemize}
+\begin{center}
+    \includegraphics[scale=0.5]{img/AccessNetworks/VDSL/vectoring.png}
+\end{center}
+Vectoring does give us increased speeds, stability and its actually pretty cheap, but it requires coordination, computational power and the infrastructure itself isn't cheap.
+
 \end{document}
