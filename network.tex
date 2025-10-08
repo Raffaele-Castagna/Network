@@ -238,5 +238,36 @@ To cancel crosstalk we use vectoring , a technique which uses an anti-sginal met
     \includegraphics[scale=0.5]{img/AccessNetworks/VDSL/vectoring.png}
 \end{center}
 Vectoring does give us increased speeds, stability and its actually pretty cheap, but it requires coordination, computational power and the infrastructure itself isn't cheap.
-
+\subsection{PON infrastructure}
+In optical fiber communication we utilize a laser to trasmit information, like copper cables we still have some attenuation, but with the newer generation of fiber optic cables, we can utilize multiple wavelengths to trasmit data.\\
+At the core of our PON we have passive optical splitters, which split the light into multiple directions, in each splitter we have an end that is closed off and by daisy chaining multiple splitters we can achieve a 1XN splitter, but every time we split the signal we reduce the signal strength by $10log_{2}(N)$ dB, where N is the number of outputs.\\
+\begin{center}
+    \includegraphics[scale=0.5]{img/AccessNetworks/PON/operations.png}
+\end{center}
+We transmit a light (wavelength), the configuration is done by having our usual downstream and upstream, we have our Optical Line Terminal (used to transmit information) and in the building we have our ONT, each wavelength is physically separated (1 for up and 1 for down), we can have 10s of kms made of fiber optic since the signal doesn't degrade as much as copper.\\\\
+The passive splitter broadcasts the signal to everyone, but we do append an address so that only the intended receiver actually utilizes the signal, we still do actually need to cypher the data so that only the receiver can actually act on the data. Though even with that we can actually see how much data someone is receiving.\\\\
+\begin{center}
+    \includegraphics[scale=0.5]{img/AccessNetworks/PON/downstream.png}
+\end{center}
+We still have the problem that upstream connections share the same wavelength so we may have collisions, since ONUs cannot listen to other ONU and splitters are passive we need a way to actually transmit data upstream. We can solve this by providing a schedule for each user to transmit data, this is done with Time Division Multiplexing Access (\textbf{TDMA}),but still that does impact our bandwidth.\\\\
+\begin{center}
+    \includegraphics[scale=0.5]{img/AccessNetworks/PON/upstream.png}
+\end{center}
+Remember though that since everyone is at different distances fromm the splitter our signal does get attenuated, therefore the OLT receives signals at different powers and must utilize automatic gain control to get a “clear” signal.
+\begin{center}
+    \includegraphics[scale=0.5]{img/AccessNetworks/PON/AGC.png}
+\end{center}
+Ethernet PON (EPON) introduces the use of Ethernet frames, specifically 802.3ah standard
+frames, in PON systems. This ensures compatibility with existing Ethernet networks. Each
+packet in the EPON network contains a header field with the MAC address of the intended
+recipient, ensuring that only the relevant packets are received by the correct ONU.
+\begin{center}
+    \includegraphics[scale=0.5]{img/AccessNetworks/PON/EPON_down.png}
+\end{center}
+As with traditional PON systems, the ONUs transmit their upstream data in synchronized time
+slots. The OLT ensures that the signals from different ONUs reach it with equal power,
+maintaining the same level of intensity for each transmission.
+\begin{center}
+    \includegraphics[scale=0.5]{img/AccessNetworks/PON/EPON_up.png}
+\end{center}
 \end{document}
